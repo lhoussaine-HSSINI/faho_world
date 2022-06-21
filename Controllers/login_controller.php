@@ -2,34 +2,38 @@
 
 class login_controller{
     public function Inscription_user(){
-        if(isset($_POST['Nom']) && isset($_POST['Prénom'])&&isset($_POST['Date_de_naissance'])){
-            $Reference=$this->getreference($_POST['Nom'], $_POST['Prénom']);
+        if(isset($_POST['first_name']) && isset($_POST['last_name']) && isset($_POST['Cin']) && isset($_POST['date_birth'])
+            && isset($_POST['email']) && isset($_POST['tel']) &&isset($_POST['country']) &&isset($_POST['City'])){
+            $password=$this->getreference($_POST['Cin']);
             $information_user=array(
-                'Nom' => trim($_POST['Nom']),
-                'Prénom' => trim($_POST['Prénom']),
-                'Date_de_naissance' =>$_POST['Date_de_naissance'],
-                'Reference'=>$Reference,
+                'First_Name' => trim($_POST['first_name']),
+                'Last_Name' => trim($_POST['last_name']),
+                'Cin' =>trim($_POST['Cin']),
+                'Date_Birth' => trim($_POST['date_birth']),
+                'Email' => trim($_POST['email']),
+                'Mobile' =>trim($_POST['tel']),
+                'Country' => trim($_POST['country']),
+                'City' => trim($_POST['City']),
+                'Password' =>$password,
+                'Type_User' => 0,
             );
-            $Resultat=array();
             $user = new User();
-            $Resultat['result_information_user']=$user->user_inscription($information_user);
-            $Resultat['RF_user']=$Reference;
-            return $Resultat;
-
+            return $user->user_inscription($information_user);
         }
     }
-
-    private function getreference($nom,$prénom){
-        $a=$nom.$prénom;
-        $b=md5($a);
-        $ref=substr($b,10,8);
-        return $ref;
+    private function getreference($cin){
+        $b=md5($cin);
+        $password=substr($b,10,8);
+        return $password;
     }
     public function Connecter(){
-        if(isset($_POST['R_U']) && !empty($_POST['R_U'])){
-            $R_U = $_POST['R_U'];
+        if(isset($_POST['email']) && !empty($_POST['email']) && isset($_POST['password']) && !empty($_POST['password'])){
+            $information_user=array(
+                'email' => trim($_POST['email']),
+                'password' => trim($_POST['password']),
+            );
             $user = new User();
-            return $user->user_connecter($R_U);
+            return $user->user_connecter($information_user);
         }
     }
     public function De_Connecter(){
